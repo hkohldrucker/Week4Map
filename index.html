@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Basic Leaflet Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+</head>
+
+<body>
+
+  <div id="map" style="width: 600px; height: 400px"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="PPR_Program_Sites.geojson"></script>
+
+  <script>
+
+    var map = L.map('map').setView([39.9526, -75.1652], 10);
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      id: 'mapbox/dark-v11',
+      accessToken: 'pk.eyJ1IjoidHVxMTI1NDciLCJhIjoiY2xzZTB2cHN6MTRibTJqbzJtemdqMGo3cSJ9.iPGa-jtagkbDwJYdy9o1PQ', 
+
+    }).addTo(map);
+
+   var style = {
+      radius: 3,
+      color: "green",
+      fillColor: "green", 
+      weight: 1, 
+      opacity: 1, 
+      fillOpacity: .8,
+    } 
+
+    var worldPlaces = L.geoJson(parks, { //This creates a geoJson layer. In this case, it calls on the variable "parks" from the "PPR_Program_Sites" geojson file. This can be found in the "GeoJson -> Creation" heading in the Leaflet directory. 
+        pointToLayer: function(feature,coordinates) { //According to the leaflet directory, "pointToLayer" "defines GeoJson points spawn Leaflet layers". In this case, we're calling on the "coordinates" variable from the geoJson file. This can be found in the "GeoJson -> Options" heading in the Leaflet directory.
+              console.log(feature.properties)
+              return L.circleMarker(coordinates, style)  
+          },
+
+
+ filter: function(feature, layer){
+          if(feature.properties.PARK_NAME === 'Frank Glavin Playground'){
+              return true
+                        }
+      } 
+    }).bindTooltip(function (layer) {
+      return layer.feature.properties.PARK_NAME //"bindTooltip" here adds tool tips to the points which appear when you hover your cursor over the circle markers. Calling on the "PARK_NAME" variable here retrieves the name of the park from the geoJson file to be displayed on the tool tip. This can be found in the "GeoJson -> Options from Layer -> Tooltip methods" heading in the Leaflet directory.
+     }).addTo(map)
+
+  </script>
+
+</body>
+</html>
+          
